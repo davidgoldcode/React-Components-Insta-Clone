@@ -7,9 +7,9 @@
 // Import the state hook
 import React, {useState} from 'react';
 // Import the Posts (plural!) and SearchBar components, since they are used inside App component
-import {likeSection, Post, PostHeader, Posts} from './components/Posts';
+import Posts from './components/Posts/Posts'
+import SearchBar from './components/SearchBar/SearchBar'
 // Import the dummyData
-import './dummy-data.js'
 import './App.css';
 import dummyData from './dummy-data.js';
 
@@ -17,8 +17,9 @@ const App = () => {
   // Create a state called `posts` to hold the array of post objects, **initializing to dummyData**.
   // This state is the source of truth for the data inside the app. You won't be needing dummyData anymore.
   // To make the search bar work (which is stretch) we'd need another state to hold the search term.
-  const [posts, setPosts] = useState([dummyData])
+  const [posts, setPosts] = useState(dummyData)
   const [searchTerm, addSearchTerm] = useState('')
+
   const likePost = postId => {
     /*
       This function serves the purpose of increasing the number of likes by one, of the post with a given id.
@@ -31,14 +32,21 @@ const App = () => {
         - if the `id` of the post matches `postId`, return a new post object with the desired values (use the spread operator).
         - otherwise just return the post object unchanged.
      */
-    const mapFunc = (item) => item.id === postId ? {item.likes + 1} : null;
-    const newArr = setPosts(posts.map(mapFunc));
-    return {...newArr}
+    setPosts(
+      posts.map((item,) => {
+      if (item.id === postId) {
+        return {...item, likes : `${item.likes + 1}`}
+      }
+        return item;
+    })
+    );
   };
 
   return (
     <div className='App'>
       {/* Add SearchBar and Posts here to render them */}
+      <Posts posts = {posts} likePosts = {posts.like}/>
+      <SearchBar searchTerm = {searchTerm} addSearchTerm={addSearchTerm}/>
       {/* Check the implementation of each component, to see what props they require, if any! */}
     </div>
   );
